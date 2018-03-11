@@ -1,68 +1,66 @@
+# Yacc简介 #
+![](https://i.imgur.com/RDGCHyu.png)
+## 一个简单的YACC输入样例 ##
+![](https://i.imgur.com/GGsY4E8.png)
+# 实验内容 #：
 
+语法分析器yacc的构成。
 
-ʵ�����ݣ�
-�﷨������yacc�Ĺ��ɡ�
-1.�����﷨����
-2.�������޹��ķ���lr1�����Զ����Ĺ���
-3. lr1�ķ��������Զ�������Ӧ�������Ĺ���
-4. lr1�ܿس���Ĺ��죨�������
-5.lr1�ķ���lalr�ķ���ת����
+----------
 
+1. 解析语法规则
+1. 上下文无关文法到lr1下推自动机的构成
+1. lr1文法的下推自动机到相应分析表的构造
+1. lr1总控程序的构造（查表程序）
+1. lr1文法到lalr文法的转换。
 
-1.TOKEN��
- 
-
-2.LR����ʽ��
- 
-
-3.LR�Զ�����״̬
- 
-4.LALR����ʽ
- 
-5.action��table
- 
 
  
-	���ǵ����γ�������Ҫ�Ƕ�Token��Production��State�����ݵĴ�������ѯ�Լ��޸ģ����ǵĵײ�洢������map��vector�ȿ���չ��ǿ����������Ĵ洢�ṹ��
-	����������������Ƶ�˼·����ϳ������ģʽ��������ù���ģʽ�������������������ࣨTokenManager��ProductManeger������װ�Եײ�洢�ķ��ʣ��Ӷ�ʹ���ǵĳ����θ���������
+考虑到本次程序中主要是对Token、Production、State等数据的创建、查询以及修改，我们的底层存储采用了map、vector等可扩展性强，操作方便的存储结构。
+考虑面向对象程序设计的思路，结合程序设计模式（这里采用工厂模式）本次设计中引入管理类（TokenManager、ProductManeger）来封装对底层存储的访问，从而使我们的程序层次更加鲜明。
 
 
-1.�ļ�����
-���ȣ�����yacc�ļ����ص����ǰѶ�����ļ��ֳ��Ĵ�飨����ͼ��userHeader��tokenDefine��productionDefine��userCode����Ȼ���tokenDefine��productionDefine�ֱ���д����Զ������е��ս�����ս���Ͳ���ʽ�����浽��Ӧ�Ĵ洢�ṹ�С�
- 
-�ڶ�tokenDefine���д���ʱ�����ǳ�������ļ��еĹؼ����ţ���%��\t��\n��\r�ȣ�����ȡ��ͬ���͵����ݡ���������������string.find()�������ص������ж�ȡ���ؼ���������ͼ��ʾ��
- 
-�ڶ�productionDefine�Ĵ���ʱ��Ϊ����ע�Ͳ������ڲ�ͬ����¶����ؼ�������������һ��flag��������Ƕ�ȡ״̬���ؼ��������£�
- 
-
-2.����LR1״̬
-	����LR1״̬��˼·����Ѱ������ڲ���ʽ�ıհ�����һ������ʽ�ļ�����ÿ������ʽ�����������µĲ���ʽʱ����ô���Ǿ��ҵ���һ��LR1��Ŀ����
-��Ŀ������չ��
-2.1��չ����������֮��ķ��ռ�������չ��Ŀ���У�����չ����
-2.2��չ�ķ�ʽ
-   2.2.1 ����չ��Ŀ������ȡ��һ����Ŀ��������չ����Ŀ�ķ��ս������	�ַ�����first()��
-   2.2.2 ������չ����Ŀ���뵽����չ��Ŀ����
-   2.2.3 ����Ŀ����ѡȡ�Ըղŵķ��ռ���Ϊ����ŵ���Ŀ�����жϸ���Ŀ	�Ƿ��Ѿ�������չ��Ŀ���������ڼ��뵽��չ��Ŀ�����С�
-2.3 ��չ������������չ��Ŀ����Ϊ��
-
-3.first���ϵĹ���
-	�����������ʹ�õ���first����a���������ÿһ�����ս����first���ϣ��ս����FIRST��������������������Ҫ��ÿһ�����ս��������FIRST���ϡ��������£�
-����ʹ������Ĺ���ֱ��ÿ������FIRST��������Ϊֹ��
-����X����VT����first��X��= {X}��
-����X����VN�����в���ʽX��a�������a���뵽first��X���У���X����Ҳ��һ������ʽ����Ѧ�Ҳ���뵽FIRST��X���С�
-�ǡ���X��Y����һ������ʽ��Y����VN�����first��Y���е����зǦ�Ԫ�ض����뵽first��X���У���X��Y1Y2��Yk��һ������ʽ��Y1����,Y�飭�����Ƿ��ս�������ң������κ�j,��<= j <= i-1��first (YJ)�����Цţ���Y1��Y�飭��=--->�ţ�,���first(Yi)�е����зǦ�Ԫ�ض����뵽first (X)�У��ر�ģ������е�FIRST(YJ)�����Ц�,j=1,2,3...k,��Ѧż��뵽first(X)�С�
-
-4.LR��LALR��ת��
-	��LR1����㷨ʵ�ֳɹ�֮�����ǿ���LALR�㷨ʵ�ʾ��ǽ�LR1�ķ��е�һЩ״̬�ϲ����ر�ģ���LR1��ÿ������ʽ��lookAhead��Ϊint��ʽ��ͬ���ǣ���LALR��״̬�����Ƕ���ÿ������ʽ��lookAheadΪvector<int>������ʽ��LALR�ķ�ʵ���㷨�������£�
-	��LALR�ж�����״̬�Ƿ���ȵ�ʱ��ֻ���жϲ���ʽ�Լ���ŵ�λ�ã���״̬�����в���ʽ��Ӧ���������ֶ���ͬʱ��������Ϊ������״̬����ͬ�ģ���������ʽ�����lookAhead�ϲ���һ���Ϊһ��״̬��
 
 
-�������ܷ������Ż���
-	��������״̬�����ٵ�ʱ��ִ���ٶ���Կɹۣ����ڲ���minic.y�ļ�ʱ����ִ��ʱ����Ҫ�ܾã�ͨ��VS2013�����ܷ��������Ƿ���getProductions�������������˽���30%��ʱ�䣬���ܷ����������ͼ��ʾ��
+
+1.文件解析
+首先，根据yacc文件的特点我们把读入的文件分成四大块（如下图的userHeader、tokenDefine、productionDefine、userCode），然后对tokenDefine和productionDefine分别进行处理以读出所有的终结符非终结符和产生式并保存到相应的存储结构中。
  
-	�𲽷���ԭ������buildState�������кܶ��ѭ��Ƕ�ף�����ͼ������getproductions��������ÿ��nextToken����ִ��һ�Σ����������ڻ�ȡ����ʽ�ϵ�ʱ����۾ͱȽϴ�
+在对tokenDefine进行处理时，我们充分利用文件中的关键符号（如%，\t，\n，\r等）来获取不同类型的数据。这里我们利用了string.find()函数的特点来进行读取。关键代码如下图所示：
  
-	Ϊ��С����ÿ��nextTokenִ��getProductions()�Ĵ��������Ƕ����ϴ����������¸Ķ���������һ��producionsbuffer�����ÿ��ͨ��nextToken��ȡ����productions,Ȼ���´λ�ȡ��ʱ���ȴ�buffer������ң��������ֱ�ӵ��ã��Ӷ�����ִ��getProductions()�Ĵ������ı�������£�
+在对productionDefine的处理时，为忽略注释并区分在不同情况下读到关键符，我引入了一个flag变量来标记读取状态，关键代码如下：
  
- 
-	ͨ�����ϸı䣬Ȼ��Գ��������ܷ�������ʱ����������½��� 
+
+2.构造LR1状态
+构造LR1状态的思路就是寻找其关于产生式的闭包。当一个产生式的集合中每条产生式都不再引入新的产生式时，那么我们就找到了一个LR1项目集。
+项目集的扩展：
+2.1扩展的条件：点之后的非终极符，扩展项目队列，已扩展集合
+2.2扩展的方式
+2.2.1 从扩展项目队列中取出一个项目，计算扩展的项目的非终结符后面	字符串的first()。
+2.2.2 对于扩展的项目加入到已扩展项目集中
+2.2.3 从项目集中选取以刚才的非终极符为左符号的项目集，判断该项目	是否已经在已扩展项目集，若不在加入到扩展项目队列中。
+2.3 扩展结束条件：扩展项目队列为空
+
+3.first集合的构造
+在这个程序中使用的是first（βa），这基于每一个非终结符的first集合（终结符的FIRST就是它本身）。所以需要对每一个非终结符构造其FIRST集合。方法如下：
+连续使用下面的规则，直到每个集合FIRST不再增大为止。
+⑴若X属于VT，则first（X）= {X}。
+⑵若X属于VN，且有产生式X→a…，则把a加入到first（X）中；若X→ε也是一条产生式，则把ε也加入到FIRST（X）中。
+⑶　若X→Y…是一个产生式且Y属于VN，则把first（Y）中的所有非ε元素都加入到first（X）中；若X→Y1Y2…Yk是一个产生式，Y1，…,Yｉ－１都是非终结符，而且，对于任何j,１<= j <= i-1，first (YJ)都含有ε（即Y1…Yｉ－１=--->ε）,则把first(Yi)中的所有非ε元素都加入到first (X)中；特别的，若所有的FIRST(YJ)都含有ε,j=1,2,3...k,则把ε加入到first(X)中。
+
+4.LR到LALR的转换
+在LR1相关算法实现成功之后，我们考虑LALR算法实际就是将LR1文法中的一些状态合并。特别的，与LR1中每条产生式的lookAhead均为int形式不同的是，在LALR的状态中我们定义每个产生式的lookAhead为vector<int>数组形式。LALR文法实现算法过程如下：
+在LALR判断两个状态是否相等的时候只需判断产生式以及点号的位置，当状态中所有产生式相应的这两部分都相同时，我们认为这两个状态是相同的，并将产生式后面的lookAhead合并到一起成为一个状态。
+
+
+----------
+
+附、性能分析及优化：
+	    本程序在状态数较少的时候，执行速度相对可观，但在测试minic.y文件时发现执行时间需要很久，通过VS2013的性能分析，我们发现getProductions（）函数花费了将近30%的时间，性能分析结果如下图所示：
+     
+    	逐步分析原因发现在buildState函数中有很多的循环嵌套（如下图），切getproductions函数对于每个nextToken都会执行一次，这样花费在获取产生式上的时间代价就比较大。
+     
+    	为减小对于每个nextToken执行getProductions()的次数，我们对以上代码作出如下改动，即建立一个producionsbuffer来存放每次通过nextToken获取到的productions,然后下次获取的时候先从buffer里面查找，如果有则直接调用，从而减少执行getProductions()的次数。改变代码如下：
+     
+     
+    	通过以上改变，然后对程序做性能分析发现时间代价明显下降： 
